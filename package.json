@@ -1,0 +1,6 @@
+{
+  "name": "weighted-round-robin",
+  "description": "a weighted round robin module",
+  "version": "1.0.0",
+  "main":"Peers.js"
+}
