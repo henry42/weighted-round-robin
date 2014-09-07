@@ -38,6 +38,7 @@
 
     if( key in this._peerMap ){
       delete this._peerMap[key];
+      this._length--;
       return true;
     }
 
