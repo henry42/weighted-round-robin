@@ -12,18 +12,17 @@
 
 
   Peers.prototype.add = function(peer){
-    if( !peer || !peer.host || !peer.port )
+    if( !peer || !peer.server )
       return false;
 
-    var key = peer.host + ":" + peer.port;
+    var key = peer.server;
 
     if( !( key in this._peerMap ) ){
       this._length++;
     }
 
     this._peerMap[key] = this.reset({
-      host : peer.host,
-      port : peer.port,
+      server : peer.server,
       down : peer.down === true,
       weight : peer.weight || 1
     });
@@ -31,10 +30,10 @@
 
 
   Peers.prototype.remove = function(peer){
-    if( !peer || !peer.host || !peer.port )
+    if( !peer || !peer.server )
       return false;
 
-    var key = peer.host + ":" + peer.port;
+    var key = peer.server;
 
     if( key in this._peerMap ){
       delete this._peerMap[key];

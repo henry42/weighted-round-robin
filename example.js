@@ -6,57 +6,50 @@ var peers = new Peers();
 
 
 peers.add({
-  host:"192.168.1.1",
-  port:"80",
+  server:"192.168.1.1:80",
   weight:90
 });
 
 peers.add({
-  host:"192.168.1.2",
-  port:"80",
+  server:"192.168.1.2:80",
   weight:10
 });
 
 peers.add({
-  host:"192.168.1.3",
-  port:"80",
+  server:"192.168.1.3:80",
   weight:10
 });
 
 peers.add({
-  host:"192.168.1.4",
-  port:"80",
+  server:"192.168.1.4:80",
   weight:10
 });
 
 peers.add({
-  host:"192.168.1.5",
-  port:"80",
+  server:"192.168.1.5:80",
   weight:10
 });
 
 peers.add({
-  host:"192.168.1.6",
-  port:"80",
+  server:"192.168.1.6:80",
   weight:10
 });
 
 peers.add({
-  host:"192.168.1.7",
-  port:"80",
+  server:"192.168.1.7:80",
   weight:10
 });
 
 
 
 for(var i = 0; i < 20 ; i++ ){
-  console.info(peers.get().host);
+  console.info(peers.get().server);
 }
 
-peers.remove({host:"192.168.1.1",port:"80"});
+peers.remove({server:"192.168.1.1:80"});
 
 console.info("-------");
 
 for(var i = 0; i < 50 ; i++ ){
-  console.info(peers.get().host);
+  console.info(peers.get().server);
 }
