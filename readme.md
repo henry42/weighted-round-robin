@@ -4,6 +4,10 @@ Weighted Round Robin
 A simple weighted round robin load balance module.
 Algorithm is similar to Nginx.
 
+Install:
+
+    npm install weighted-round-robin
+
 Usage:
 
     var Peers = require('weighted-round-robin');
@@ -11,20 +15,17 @@ Usage:
     var peers = new Peers();
 
     peers.add({
-      host:"192.168.1.1",
-      port:"80",
+      server:"192.168.1.1:80",
       weight:90
     });
 
     peers.add({
-      host:"192.168.1.2",
-      port:"80",
+      server:"192.168.1.2:80",
       weight:10
     });
 
     peers.add({
-      host:"192.168.1.3",
-      port:"80",
+      server:"192.168.1.3:80",
       weight:10
     });
 
@@ -32,5 +33,5 @@ Usage:
 
 
     for(var i = 0; i < 20 ; i++ ){
-      console.info(peers.get().host);
+      console.info(peers.get().server);
     }
