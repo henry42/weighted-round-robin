@@ -57,16 +57,19 @@
 
 
   Peers.prototype.get = function(){
-    var bestPeer;
+
+    var bestPeer,peer,peerKey;
+
     if( this._length === 0 )
       return null;
+  
     if( this._length === 1 ){
-      for( bestPeer in this._peerMap )
+      for( peerKey in this._peerMap )
         break;
-      return bestPeer;
+      return this._peerMap[peerKey];
     }
 
-    var peer,peerKey,totalEffectiveWeight = 0;
+    var totalEffectiveWeight = 0;
 
     for( peerKey in this._peerMap ){
       peer = this._peerMap[peerKey];
