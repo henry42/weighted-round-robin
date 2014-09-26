@@ -43,7 +43,7 @@
                 if( key( peer ) === true ){
                     this.remove( peer.id );
                 }
-            });
+            },this);
 
             return;
         }
