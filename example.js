@@ -5,7 +5,7 @@ var Peers = require('./Peers');
 var peers = new Peers();
 
 
-peers.add({
+var first = peers.add({
   server:"192.168.1.1:80",
   weight:90
 });
@@ -46,7 +46,11 @@ for(var i = 0; i < 20 ; i++ ){
   console.info(peers.get().server);
 }
 
-peers.remove({server:"192.168.1.1:80"});
+peers.remove(first);
+
+peers.remove(function(peer){
+	return peer.server === '192.168.1.6:80';
+});
 
 console.info("-------");
 

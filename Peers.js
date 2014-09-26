@@ -1,99 +1,105 @@
 'use strict';
 
 (function(){
-  var Peers = function(){
-    this._peerMap = {};
-    this._length = 0;
-  };
 
-  Peers.prototype.size = function(){
-    return this._length;
-  };
+    var _uniqueId = 1;
 
-
-  Peers.prototype.add = function(peer){
-    if( !peer || !peer.server )
-      return false;
-
-    var key = peer.server;
-
-    if( !( key in this._peerMap ) ){
-      this._length++;
+    function uniqueId(){
+        return 'peer_' + (_uniqueId++);
     }
 
-    this._peerMap[key] = this.reset({
-      server : peer.server,
-      down : peer.down === true,
-      weight : peer.weight || 1
-    });
-  };
-
-
-  Peers.prototype.remove = function(peer){
-    if( !peer || !peer.server )
-      return false;
-
-    var key = peer.server;
-
-    if( key in this._peerMap ){
-      delete this._peerMap[key];
-      this._length--;
-      return true;
-    }
-
-    return false;
-  };
-
-  Peers.prototype.reset = function(peer){
-    if( peer instanceof Array ){
-      peer.map( Peers.reset , Peers )
-      return;
+    var Peers = function(){
+        this._peerMap = {};
+        this._length = 0;
     };
 
-    peer.currentWeight = peer.weight;
-    peer.effectiveWeight = peer.weight;
-    return peer;
-  };
+    Peers.prototype.size = function(){
+        return this._length;
+    };
 
 
-  Peers.prototype.get = function(){
+    Peers.prototype.add = function(peer){
+        if( !peer )
+            return false;
 
-    var bestPeer,peer,peerKey;
+        var key = "id" in peer || ( peer.id = uniqueId() );
 
-    if( this._length === 0 )
-      return null;
-  
-    if( this._length === 1 ){
-      for( peerKey in this._peerMap )
-        break;
-      return this._peerMap[peerKey];
+        if( !( key in this._peerMap ) ){
+            this._length++;
+        }
+
+        this._peerMap[key] = this._reset(peer);
+
+        return key;
+    };
+
+
+    Peers.prototype.remove = function( key ){
+
+
+        if( typeof key === 'function'){
+			
+            for( var _key in this._peerMap ){
+                if( key( this._peerMap[_key] ) === true ){
+                    this.remove(_key);
+                }
+            }
+        }
+
+        if( key in this._peerMap ){
+            delete this._peerMap[key];
+            this._length--;
+        }
+    };
+
+    Peers.prototype._reset = function(peer){
+        if( peer instanceof Array ){
+            peer.map( Peers._reset , Peers )
+            return;
+        };
+
+        peer.weight = peer.weight || 10;
+        peer.currentWeight = peer.weight;
+        peer.effectiveWeight = peer.weight;
+
+        return peer;
+    };
+
+
+    Peers.prototype.get = function(){
+
+        var bestPeer,peer,peerKey;
+
+        if( this._length === 0 )
+            return null;
+
+        if( this._length === 1 ){
+            for( peerKey in this._peerMap )
+                break;
+            return this._peerMap[peerKey];
+        }
+
+        var totalEffectiveWeight = 0;
+
+        for( peerKey in this._peerMap ){
+            peer = this._peerMap[peerKey];
+
+            totalEffectiveWeight += peer.effectiveWeight;
+            peer.currentWeight += peer.effectiveWeight;
+
+            if( peer.effectiveWeight < peer.weight )
+                peer.effectiveWeight++;
+
+            if( !bestPeer || bestPeer.currentWeight < peer.currentWeight )
+                bestPeer = peer;
+
+        }
+
+        if( bestPeer )
+            bestPeer.currentWeight -= totalEffectiveWeight;
+
+        return bestPeer;
     }
 
-    var totalEffectiveWeight = 0;
-
-    for( peerKey in this._peerMap ){
-      peer = this._peerMap[peerKey];
-
-      if( peer.down )
-        continue;
-
-
-      totalEffectiveWeight += peer.effectiveWeight;
-      peer.currentWeight += peer.effectiveWeight;
-
-      if( peer.effectiveWeight < peer.weight )
-        peer.effectiveWeight++;
-
-      if( !bestPeer || bestPeer.currentWeight < peer.currentWeight )
-        bestPeer = peer;
-
-    }
-
-    if( bestPeer )
-      bestPeer.currentWeight -= totalEffectiveWeight;
-
-    return bestPeer;
-  }
-
-  module.exports = Peers;
+    module.exports = Peers;
 })();
