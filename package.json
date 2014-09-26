@@ -1,7 +1,7 @@
 {
   "name": "weighted-round-robin",
   "description": "a weighted round robin module",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "main":"Peers.js",
   "repository": "https://github.com/henry42/weighted-round-robin"
 }

@@ -45,6 +45,14 @@ returns `id` for the peers, notice that the object will be modified, you'd bette
 
 returns a peer according to the algorithm.
 
+###peers.reset()
+
+reset all peers' chance. 
+
+###peers.each( fn , context )
+
+iterates over all peers, the `fn` is bound to the `context` object.
+
 ###peers.remove( key )
 
 remove the peer.

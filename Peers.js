@@ -22,7 +22,7 @@
         if( !peer )
             return false;
 
-        var key = "id" in peer || ( peer.id = uniqueId() );
+        var key = "id" in peer ? peer["id"] :  ( peer.id = uniqueId() );
 
         if( !( key in this._peerMap ) ){
             this._length++;
@@ -38,18 +38,33 @@
 
 
         if( typeof key === 'function'){
-			
-            for( var _key in this._peerMap ){
-                if( key( this._peerMap[_key] ) === true ){
-                    this.remove(_key);
+
+            this.each( function( peer ){
+                if( key( peer ) === true ){
+                    this.remove( peer.id );
                 }
-            }
+            });
+
+            return;
         }
 
         if( key in this._peerMap ){
             delete this._peerMap[key];
             this._length--;
         }
+    };
+
+
+    Peers.prototype.each = function( fn , context ){
+        for( var _key in this._peerMap ){
+            fn.call( context , this._peerMap[_key] )
+        }
+    };
+
+    Peers.prototype.reset = function(){
+        this.each( function( peer ){
+            this._reset( peer )
+        },this);
     };
 
     Peers.prototype._reset = function(peer){
